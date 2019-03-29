@@ -113,6 +113,14 @@ tidy(lmgod)
 
 ```
 
+調整standard error後的估計結果：
+```{r, results='asis'}
+lmgod1 <- coeftest(lmgod, vcov. = vcovHC, type="HC1")
+stargazer(lmgod1,
+          se=list(lmgod1[,"Std. Error"]),
+          type="html",
+          align=TRUE)
+```
 
 
 ## 1.4 選擇性偏誤
