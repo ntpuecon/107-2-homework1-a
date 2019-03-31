@@ -82,24 +82,27 @@ library("ggplot2")
 library("dplyr")
 library("knitr")
 library(psych)
-ols1=lm(可修個體~個經PR,data=hw1Data)
+ols1=lm(個經PR~可修個體,data=hw1Data)
 summary(ols)
 library(sandwich)
 library(lmtest)
 library(stargazer)
 ols1_coeftest=coeftest(ols1, vcov. = vcovHC, type="HC1")
-stargazer(model_1, 
-          se=list(model_1_coeftest[,"Std. Error"]),
+stargazer(ols1, 
+          se=list(ols1_coeftest[,"Std. Error"]),
           type="text",
           align=TRUE)
 ```
 
 ## 1.4 選擇性偏誤
 上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
+    
+    立足點高的人（較聰明的人）就算沒有擋修制度，個經依然可以修得很好，所以上題的估計裡面的效果可能包含了原本學生資質的不同。
 
 ## 1.5 選擇性偏誤
 這個資料還包含**經原PR**變數，它是學生最後修過的經原成績在該經原班的排名。說明有必要控制**經原PR**的理由（非數學證明）。
 
+＊＊經原PR＊＊可以消除立足點不同的問題。
 
 ## 1.6 複迴歸模型
 估算以下的複迴歸模型：
@@ -107,13 +110,27 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans16}
+ols2=lm(個經PR~可修個體+經原PR,data=hw1Data)
+summary(ols2)
+ols2_coeftest=coeftest(ols2, vcov. = vcovHC, type="HC1")
+stargazer(ols2, 
+          se=list(ols2_coeftest[,"Std. Error"]),
+          type="text",
+          align=TRUE)
 ```
+
 
 
 ## 1.7 變數關連
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
+group=group_by(hw1Data,可修個體)
+sum=summarise(group,
+        meaneco=mean(經原PR,na.rm=T),
+        meanmicroeco=mean(個經PR,na.rm=T))
+head(sum)
+
 ```
 
 
@@ -126,7 +143,14 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
   2. **可修個體**=1的族群，其**經原PR**平均較(6)____(高/低)
   
 故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)____(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)____(高/低)所至。
-
+(1)下降
+(2)０．１１
+(3)低
+(4)正向偏誤
+(5)正向
+(6)高
+(7)高與低
+(8)高
 ## 1.9 (Optional, 可不寫)
 
 從前面的論述你發現什麼？背後的效應反映出什麼課程結構或學生學習問題？你會怎麼延伸研究下去。
