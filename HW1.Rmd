@@ -39,19 +39,7 @@ params:
 # 此chunk為環境設定，無需更動
 knitr::opts_chunk$set(echo = TRUE,message=F)
 library(dplyr)
-library("AER")
-library("ggplot2")
-library("dplyr")
-library("knitr")
-library("lmtest")
-library("ggplot2")
-library("dplyr")
-library("knitr")
-library("psych")
-library("broom")
-library("sandwich")
-library("lmtest")
-library("stargazer")
+
 
 ```
 
@@ -97,14 +85,16 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans13}
-model1HW <- lm((個經PR)~ (可修個體), data =hw1Data)
-model1HW_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
-#lm(("個經PR")~(可修個體)%>%(data=hw1Data))->mode11HW
-#mode11HW<- lm((個經PR)~ (可修個體),data= hw1Data)
-#coeftest(mode11HW, vcov. = vcovHC, type="HC1")->mode11HW_coeftest
+library(sandwich)
+library(lmtest)
+lm((個經PR)~ (經原PR),data=hw1Data)->model1HW
 
-summary(mode11HW)
-summary(mode11HW_coeftest)
+model1HW_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
+
+
+
+summary(model1HW)
+summary(model1HW_coeftest)
 ```
 
 ## 1.4 選擇性偏誤
@@ -126,8 +116,10 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 
 ```{r ans16}
 lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
-#model2HW_coeftest
+model2HW_coeftest<-coeftest(model2HW, vcov. = vcovHC, type="HC1")
 
+summary(model2HW)
+summary(model2HW_coeftest)
 ```
 
 
@@ -135,12 +127,7 @@ lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
-library(nycflights13)
-library(SportsAnalytics)
-library(tibble)
-group_by()
-summarise()
-mean( ,na.rm=T)
+
 ```
 
 
