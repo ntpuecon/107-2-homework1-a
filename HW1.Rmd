@@ -32,12 +32,27 @@ params:
 #你的程式答案
 ```
 
-如果是文字答案，請直接在該題空白處回答。
+如果是文字答案，請直接在該題空白處回答。library("AER")
+
 
 ```{r setup, include=FALSE}
 # 此chunk為環境設定，無需更動
 knitr::opts_chunk$set(echo = TRUE,message=F)
 library(dplyr)
+library("AER")
+library("ggplot2")
+library("dplyr")
+library("knitr")
+library("lmtest")
+library("ggplot2")
+library("dplyr")
+library("knitr")
+library("psych")
+library("broom")
+library("sandwich")
+library("lmtest")
+library("stargazer")
+
 ```
 
 # 1 擋修的效果
@@ -52,11 +67,16 @@ library(dplyr)
 
 ## 1.1 效應評估
 
-我們以個體經濟學為考量之進階課程，學生學習成效以**個經PR**（即學生第一次第一學期修完個經在同班的排名）來衡量。令**可修個體**虛擬變數其值為1若該學生通過修課限制可以修個經，反之為0。請寫下正確的效應結構（ 課堂上的Y即這裡的 **個經PR**，請對應課堂的$$Y_{1i}-Y_{0i}$$寫法，寫出這題的表示句子。)
+我們以個體經濟學為考量之進階課程，學生學習成效以**個經PR**（即學生第一次第一學期修完個經在同班的排名）來衡量。令**可修個體**虛擬變數其值為1若該學生通過修課限制可以修個經，反之為0。請寫下正確的效應結構（ 課堂上的Y即這裡的 **個經PR**，請對應課堂的$Y_{1i}-$Y_{1i}，寫法，寫出這題的表示句子。)
+
+$Y_{1i}$為是可修習個經同學的pr，$Y_{1i}$不可修習個經同學pr，兩者相減是是否可以修習個經同學會對pr造成影響
+
 
 ## 1.2 效應結構
-接續上題，課堂上的treatment dummy即為這裡的**可修個體**dummy，請寫下對應課堂效應結構$$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$$之對應寫法（以這裡的文字符號表示）。
- 
+接續上題，課堂上的treatment dummy即為這裡的**可修個體**dummy，請寫下對應課堂效應結構$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$之對應寫法（以這裡的文字符號表示）。
+$i$表示所有學生
+$T_i$是dummy variable，$T_i=1$是有通過限制的學生，$T_i=0$是沒有通過限制的學生，所以當通過限制的學生$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})*1$其結果是$Y_{1i}$
+，沒通過的學生是$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})*0$其結果是$Y_{0i}$
 ## 1.3 簡單迴歸模型
 考慮使用如下的簡單迴歸模型來估計效應係數：
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+\epsilon_i$$
@@ -77,13 +97,26 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans13}
+model1HW <- lm((個經PR)~ (可修個體), data =hw1Data)
+model1HW_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
+#lm(("個經PR")~(可修個體)%>%(data=hw1Data))->mode11HW
+#mode11HW<- lm((個經PR)~ (可修個體),data= hw1Data)
+#coeftest(mode11HW, vcov. = vcovHC, type="HC1")->mode11HW_coeftest
+
+summary(mode11HW)
+summary(mode11HW_coeftest)
 ```
 
 ## 1.4 選擇性偏誤
 上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
 
+立足點不同:當限制通過的學生可能會想要一次就過個經，就努力學習，考的成績就會比較好；反之，當限制不通過的學生，他可能覺得反正修了個經也不計分，所以就不認真，有可能成績就會比較低。
+
 ## 1.5 選擇性偏誤
 這個資料還包含**經原PR**變數，它是學生最後修過的經原成績在該經原班的排名。說明有必要控制**經原PR**的理由（非數學證明）。
+
+有可能因經原PR比較高的的分數，而個經成績好，即使微積分0分，所以如果控制經原PR，讓經原PR跟個經成績獨立，簡回歸會比較準確。
+
 
 
 ## 1.6 複迴歸模型
@@ -92,6 +125,9 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans16}
+lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
+#model2HW_coeftest
+
 ```
 
 
@@ -99,6 +135,12 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
+library(nycflights13)
+library(SportsAnalytics)
+library(tibble)
+group_by()
+summarise()
+mean( ,na.rm=T)
 ```
 
 
