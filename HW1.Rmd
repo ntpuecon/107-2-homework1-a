@@ -89,7 +89,7 @@ library(sandwich)
 library(lmtest)
 lm((個經PR)~ (經原PR),data=hw1Data)->model1HW
 
-model1HW_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
+model1HW_coeftest<- coeftest(model1HW, vcov. = vcovHC, type="HC1")
 
 
 
@@ -139,7 +139,7 @@ hw1Data %>% group_by(可修個體) %>% summarise(經原avg=mean(經原PR,na.rm=T
   1. **經原PR**與**個經PR**有(5)__正向__(正向/反向)關連
   2. **可修個體**=1的族群，其**經原PR**平均較(6)__高__(高/低)
   
-故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)__高與低__(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)_高___(高/低)所至。
+故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)__高與低__(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)_高  ___(高/低)所至。
 
 ## 1.9 (Optional, 可不寫)
 
