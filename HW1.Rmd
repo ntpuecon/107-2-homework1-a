@@ -90,7 +90,7 @@ model1_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
 
 stargazer(model1_coeftest, 
           se=list(model1_coeftest[,"Std. Error"]),
-          type="text",
+          type="html",
           align=TRUE)
 ```
 
@@ -109,7 +109,14 @@ stargazer(model1_coeftest,
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans16}
+```{r ans16}{r, results='asis'}
+model2<- lm((個經PR)~ (可修個體)+(經原PR), data = hw1Data)
+model2_coeftest<- coeftest(model2, vcov. = vcovHC, type="HC1")
+
+stargazer(model2_coeftest, 
+          se=list(model2_coeftest[,"Std. Error"]),
+          type="html",
+          align=TRUE)
 ```
 
 
@@ -117,18 +124,22 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
+str(hw1Data)
+
+hw1Data %>% group_by(可修個體) %>% summarise(經原avg=mean(經原PR,na.rm=T),個經avg=mean(個經PR,na.rm=T))
+
 ```
 
 
 ## 1.8 偏誤方向
 
 請填入以下空格完成完整偏誤論述：  
-有控制**經原PR**時，擋修會使得**個經PR** (1)____(上升/下降) (2)____百分點，其值比未控制**經原PR**時還 (3)____(高/低)；這表示忽略**經原PR**會對效應係數估計產生 (4)____(正向偏誤(upward bias)/負向偏誤(downward bias))。之所以會有上述的偏誤方向來自於兩個因素：
+有控制**經原PR**時，擋修會使得**個經PR** (1)_下降_(上升/下降) (2)_6.802_百分點，其值比未控制**經原PR**時還 (3)_低_(高/低)；這表示忽略**經原PR**會對效應係數估計產生 (4)_正向偏誤_(正向偏誤(upward bias)/負向偏誤(downward bias))。之所以會有上述的偏誤方向來自於兩個因素：
 
-  1. **經原PR**與**個經PR**有(5)____(正向/反向)關連
-  2. **可修個體**=1的族群，其**經原PR**平均較(6)____(高/低)
+  1. **經原PR**與**個經PR**有(5)_正向_(正向/反向)關連
+  2. **可修個體**=1的族群，其**經原PR**平均較(6)_高_(高/低)
   
-故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)____(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)____(高/低)所至。
+故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)_高與低_(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)_高_(高/低)所至。
 
 ## 1.9 (Optional, 可不寫)
 
