@@ -100,24 +100,21 @@ library(stargazer)
 
 ```
 
-Ans.
+Ans. 
 
 最小平方法的估計結果：
 ```{r ans13}
 
-hw1Data_god <- hw1Data[,c("個經PR","可修個體")]
-colnames(hw1Data_god) <- c("Y","X1")
-
-lmgod <- lm(Y ~ X1, data = hw1Data_god)
-tidy(lmgod)
+lmgod1 <- lm( (個經PR) ~ (可修個體), data = hw1Data )
+tidy(lmgod1)
 
 ```
 
 調整standard error後的估計結果：
 ```{r, results='asis'}
-lmgod1 <- coeftest(lmgod, vcov. = vcovHC, type="HC1")
-stargazer(lmgod1,
-          se=list(lmgod1[,"Std. Error"]),
+lmgod01 <- coeftest(lmgod1, vcov. = vcovHC, type="HC1")
+stargazer(lmgod01,
+          se=list(lmgod01[,"Std. Error"]),
           type="html",
           align=TRUE)
 ```
@@ -137,15 +134,34 @@ Ans.
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans16}
+
+Ans.
+
+```{r ans16, results='asis'}
+
+lmgod2 <- lm( (個經PR) ~ (可修個體) + (經原PR), data = hw1Data)
+lmgod02 <- coeftest(lmgod2, vcov. = vcovHC, type="HC1")
+stargazer(lmgod02,
+          se=list(lmgod02[,"Std. Error"]),
+          type="html",
+          align=TRUE)
+
 ```
 
 
 ## 1.7 變數關連
-請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
+請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值）
+
+
+Ans.
 
 ```{r ans17}
+
+hw1Data %>% group_by(可修個體) %>% 
+        summarise(經原avg = mean(經原PR,na.rm=T),個經avg = mean(個經PR,na.rm=T))
+
 ```
+
 
 
 ## 1.8 偏誤方向
