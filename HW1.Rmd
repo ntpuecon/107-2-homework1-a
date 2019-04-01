@@ -9,8 +9,8 @@ output:
       collapsed: true
       smooth_scroll: false
 params:
-  name: ["阿花","阿明"]
-  id: [710761001,710661002]
+  name: ["張郁瑋","阿明"]
+  id: [710761108,710661002]
   group: "team1"
   url: ""
 ---
@@ -87,14 +87,18 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 ```{r ans13}
 library(sandwich)
 library(lmtest)
+library(stargazer)
 lm((個經PR)~ (經原PR),data=hw1Data)->model1HW
 
 model1HW_coeftest<- coeftest(model1HW, vcov. = vcovHC, type="HC1")
+stargazer(model1HW, 
+          se=list(model1HW_coeftest[,"Std. Error"]), 
+          type="html",
+          align=TRUE)
 
 
 
-summary(model1HW)
-summary(model1HW_coeftest)
+
 ```
 
 ## 1.4 選擇性偏誤
@@ -117,9 +121,10 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 ```{r ans16}
 lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
 model2HW_coeftest<-coeftest(model2HW, vcov. = vcovHC, type="HC1")
-
-summary(model2HW)
-summary(model2HW_coeftest)
+stargazer(model2HW, 
+          se=list(model2HW_coeftest[,"Std. Error"]), 
+          type="html",
+          align=TRUE)
 ```
 
 
