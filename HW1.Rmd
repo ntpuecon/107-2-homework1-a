@@ -84,7 +84,8 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans13}
+```{r ans13, results='asis'}
+
 library(sandwich)
 library(lmtest)
 library(stargazer)
@@ -93,7 +94,7 @@ summary(model1HW)
 model1HW_coeftest<-coeftest(model1HW, vcov. = vcovHC, type="HC1")
 stargazer(model1HW, 
           se=list(model1HW_coeftest[,"Std. Error"]), 
-          type="text",
+          type="html",
           align=TRUE)
 
 
@@ -117,13 +118,13 @@ stargazer(model1HW,
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans16}
+```{r ans16, results='asis'}
 lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
 model2HW_coeftest<-coeftest(model2HW, vcov. = vcovHC, type="HC1")
 summary(model2HW)
 stargazer(model2HW, 
           se=list(model2HW_coeftest[,"Std. Error"]), 
-          type="text",
+          type="html",
           align=TRUE)
 ```
 
