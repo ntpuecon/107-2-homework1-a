@@ -89,13 +89,12 @@ library(sandwich)
 library(lmtest)
 library(stargazer)
 lm((個經PR)~ (經原PR),data=hw1Data)->model1HW
-
-model1HW_coeftest<- coeftest(model1HW, vcov. = vcovHC, type="HC1")
+summary(model1HW)
+model1HW_coeftest<-coeftest(model1HW, vcov. = vcovHC, type="HC1")
 stargazer(model1HW, 
           se=list(model1HW_coeftest[,"Std. Error"]), 
-          type="html",
+          type="text",
           align=TRUE)
-
 
 
 
@@ -121,9 +120,10 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 ```{r ans16}
 lm((個經PR)~ (可修個體)+(經原PR),data=hw1Data)->model2HW
 model2HW_coeftest<-coeftest(model2HW, vcov. = vcovHC, type="HC1")
+summary(model2HW)
 stargazer(model2HW, 
           se=list(model2HW_coeftest[,"Std. Error"]), 
-          type="html",
+          type="text",
           align=TRUE)
 ```
 
