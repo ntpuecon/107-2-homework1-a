@@ -11,7 +11,7 @@ output:
 params:
   name: ["張郁瑋","王正評"]
   id: [710761108,71076105]
-  group: "team1"
+  group: "teamA"
   url: ""
 ---
 請依狀況更改上面的name,id及group（分別代表組員姓名，學號及組號），但請勿更改下面三行的設定。  
