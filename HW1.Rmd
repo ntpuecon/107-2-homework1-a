@@ -9,9 +9,9 @@ output:
       collapsed: true
       smooth_scroll: false
 params:
-  name: ["阿花","阿明"]
-  id: [710761001,710661002]
-  group: "team1"
+  name: ["王正評","郭品辰","謝芮文","張郁瑋"]
+  id: [710761105,710761112,710761120,710761108]
+  group: "teamA"
   url: ""
 ---
 請依狀況更改上面的name,id及group（分別代表組員姓名，學號及組號），但請勿更改下面三行的設定。  
@@ -38,6 +38,14 @@ params:
 # 此chunk為環境設定，無需更動
 knitr::opts_chunk$set(echo = TRUE,message=F)
 library(dplyr)
+library(AER)
+library(ggplot2)
+library(knitr)
+library(psych)
+library(broom)
+library(sandwich)
+library(lmtest)
+library(stargazer)
 ```
 
 # 1 擋修的效果
@@ -76,15 +84,25 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans13}
+```{r ans13}{r, results='asis'}
+model1<- lm((個經PR)~ (可修個體), data = hw1Data)
+model1_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
+
+stargazer(model1_coeftest, 
+          se=list(model1_coeftest[,"Std. Error"]),
+          type="text",
+          align=TRUE)
 ```
 
 ## 1.4 選擇性偏誤
 上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
 
+學生原先是否能修個經會造成立足點的不同。學生有通過限制代表該學生原始程度比較好，故處於比較高的立足點，反之，當學生第一次未通過限制，但他未來過了以後去修課代表該學生原始程度較糟糕，則會處於較低的立足點。故由於立足點不同，可能造成估計結果的不正確。
+
 ## 1.5 選擇性偏誤
 這個資料還包含**經原PR**變數，它是學生最後修過的經原成績在該經原班的排名。說明有必要控制**經原PR**的理由（非數學證明）。
 
+經原PR可能與可修個體與個經PR有關聯，經原PR高者可能在個經上會有較好的表現，也可能讓可修個體與個經PR產生關聯，因此控制住經原PR，能夠去除可修個體與個經PR之間的關聯性，讓彼此獨立。
 
 ## 1.6 複迴歸模型
 估算以下的複迴歸模型：
