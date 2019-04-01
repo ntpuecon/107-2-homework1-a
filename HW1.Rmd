@@ -137,7 +137,17 @@ Ans.
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
-```{r ans16}
+```{r ans16}{r, results='asis'}
+model2<- lm((個經PR)~ (可修個體)+(經原PR), data = hw1Data)
+model2_coeftest<- coeftest(model2, vcov. = vcovHC, type="HC1")
+
+summary(model2)
+summary(model2_coeftest)
+
+stargazer(model2_coeftest, 
+          se=list(model2_coeftest[,"Std. Error"]),
+          type="text",
+          align=TRUE)
 ```
 
 
