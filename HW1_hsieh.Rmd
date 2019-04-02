@@ -163,17 +163,39 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
 
 提示：證明過程可以適時的使用以下特質：
 
-  * 
-  $$\sum_i w_i=\sum_{i,x_i=1} w_i +\sum_{i,x_i=0} w_i$$
+  * $\sum_i w_i=\sum_{i,x_i=1} w_i +\sum_{i,x_i=0} w_i$
   
   * $\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
+  
+$$\hat{\beta_1}=\frac{\sum(x_i-\bar{x})(y_i-\bar{y})-<1>}{\sum(x_i-\bar{x})^2-<2>}$$
 
+$$<1>{\sum(x_i-\bar{x})(y_i-\bar{y})}$$
+$$=\sum(x_i-\bar{x})y_i$$
+$$=\sum{x_iy_i}-\sum{\bar{x}y_i}$$
+$$=n\bar{y_i}-\frac{n_1}{n_0+n_1}\sum{y_i}$$
+$$=n_1\bar{y_1}-\frac{n_1}{n_0+n_1}(n_0\bar{y_0}+n_1\bar{y_1})$$
+$$=\frac{1}{n_0+n_1}[\frac{n_1(n_0+n_1)\bar{y_1}}{n_1^2\bar{y_1}+n_0n_1\bar{y_1}}-n_1^2\bar{y_1}-n_0n_1\bar{y_0}]$$
+$$=\frac{n_0n_1}{n_0+n_1}(\bar{y_1}-\bar{y_0})$$
+
+$$<2>\sum(x_i-\bar{x})^2$$
+$$=\sum{x_i}^2-n\bar{x}^2$$
+$$=n_1-n(\frac{n_1}{n_0+n_1})^2$$
+$$=n_1-(n_0+n_1)\frac{n_1^2}{(n_0+n_1)^2}$$
+$$=n_1-\frac{n_1^2}{(n_0+n_1)}$$
+$$=\frac{n_1(n_0+n_1)-n_1^2}{n_0+n_1}$$
+$$=\frac{n_0n_1}{n_0+n_1}$$
+
+$$\hat{\beta_1}=\frac{<1>}{<2>}=\frac{\frac{n_0n_1}{n_0+n_1}(\bar{y_1}-\bar{y_0})}{\frac{n_0n_1}{n_0+n_1}}$$
+$$\hat{\beta_1}=\bar{y}_1-\bar{y}_0$$
 
 ## 2.2
 
 假設$E(\epsilon_i|x_i)=0$，證明上題設定下：
 
   (a) $E(\hat{\beta}_1)=\beta_1$
+  
+$$\hat{\beta}=(x'x)^{-1}x'y$$
+$$E(\hat{\beta})=\beta$$
   
   (b) 若條件在已知已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$。
   
