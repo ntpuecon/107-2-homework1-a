@@ -66,7 +66,7 @@ library(stargazer)
 Ans.
 
 $$Y_{1i}-Y_{0i}=\delta_i$$
-其中$\delta_i$為可修個體之效果
+其中$\delta_i$為「可修個體」之效果
 
 
 ## 1.2 效應結構
@@ -76,7 +76,7 @@ $$Y_{1i}-Y_{0i}=\delta_i$$
 Ans.
 
 $$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$$
-其中$T_i=1$表示該學生的實際個經PR為「被擋修過之個經PR」加上「可修個體」之效果
+其中$T_i=1$表示該學生的個經PR為「被擋修過之個經PR」加上「可修個體」之效果
 
  
 ## 1.3 簡單迴歸模型
@@ -106,7 +106,6 @@ model1<- lm((個經PR)~ (可修個體), data = hw1Data)
 model1_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
 
 stargazer(model1_coeftest, 
-          se=list(model1_coeftest[,"Std. Error"]),
           type="html",
           align=TRUE)
 ```
@@ -117,7 +116,9 @@ stargazer(model1_coeftest,
 
 Ans.
 
-學生原先是否能修個經會造成立足點的不同。學生有通過限制代表該學生原始程度比較好，故處於比較高的立足點，反之，當學生第一次未通過限制，但他未來過了以後去修課代表該學生原始程度較糟糕，則會處於較低的立足點。故由於立足點不同，可能造成估計結果的不正確。
+學生個經是否被擋修過可能會造成立足點（被擋修過之個經PR）的不同。個經沒被擋修過的學生（可修個體= 1）可能代表他的學習能力
+比較強，故處於比較高的立足點；而個經被擋修過的學生（可修個體= 0），可能代表他的學習能力較差
+，故處於比較低的立足點。這樣會造成兩方個經PR的差異涵蓋了其本身立足點的差異，造成估計的結果不正確。
 
 
 ## 1.5 選擇性偏誤
@@ -126,7 +127,7 @@ Ans.
 
 Ans.
 
-經原PR可能與可修個體與個經PR有關聯，經原PR高者可能在個經上會有較好的表現，也可能讓可修個體與個經PR產生關聯，因此控制住經原PR，能夠去除可修個體與個經PR之間的關聯性，讓彼此獨立。
+「經原PR」可能會與「可修個體」有關聯，並影響立足點的差異。「經原PR」愈高的學生，愈有可能是個經沒被擋修過的學生（可修個體= 1），他的立足點應該比較高。因此若加入「經原PR」這個解釋變數，可以使立足點的差異轉移到「經原PR」下。且若「經原PR」較高，通常也代表「個經PR」較高，所以有必要控制「經原PR」這個解釋變數。
 
 
 ## 1.6 複迴歸模型
@@ -137,12 +138,11 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 
 Ans.
 
-```{r ans16}{r, results='asis'}
+```{r ans16, results='asis'}
 model2<- lm((個經PR)~ (可修個體)+(經原PR), data = hw1Data)
 model2_coeftest<- coeftest(model2, vcov. = vcovHC, type="HC1")
 
 stargazer(model2_coeftest, 
-          se=list(model2_coeftest[,"Std. Error"]),
           type="html",
           align=TRUE)
 ```
