@@ -173,7 +173,17 @@ $$\bar{y}_0=\sum_{i,x_i=0}y_i/n_0$$
   
    * $\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
    
-   
+  
+PF
+$$\hat{\beta}_1  = \frac{ \sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y}) } { \sum_{i=1}^n (x_i-\bar{x})^2 }$$
+              $$= \frac{ (\sum_{i=1}^n x_iy_i)-n\bar{x}\bar{y} } { (\sum_{i=1}^n x_i^2)-n\bar{x}^2 }$$
+              $$= \frac{ \sum_{i,x_i=1} y_i-n_1\bar{y} } { n_1-{n_1^2/n} }$$
+              $$= \frac{ n_1\bar{y_1}-n_1\bar{y} } { n_1-{n_1^2/n} }$$
+             $$= \frac{ \bar{y_1}-\bar{y} } { 1-{n_1/n} }$$
+             $$= \frac{ \bar{y_1} } {n_0/n} - \frac{ (n_1\bar{y_1}+n_0\bar{y_0})/n } {n_0/n}$$
+             $$= \frac{ n_1\bar{y_1}+n_0\bar{y_1}-n_1\bar{y_1}-n_0\bar{y_0} } {n_0}$$
+             $$=\bar{y}_1-\bar{y}_0$$
+             
    
 
 
@@ -182,6 +192,7 @@ $$\bar{y}_0=\sum_{i,x_i=0}y_i/n_0$$
 假設$$E(\epsilon_i|x_i)=0$$，證明上題設定下：
 
   (a) $$E(\hat{\beta}_1)=\beta_1$$
+  
   
   (b) 若條件在已知已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$$。
   
