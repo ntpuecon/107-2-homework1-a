@@ -1,4 +1,5 @@
 ---
+---
 title: "作業1"
 output: 
   html_document: 
@@ -9,9 +10,9 @@ output:
       collapsed: true
       smooth_scroll: false
 params:
-  name: ["王正評","郭品辰","謝芮文","張郁瑋"]
-  id: [710761105,710761112,710761120,710761108]
-  group: "teamA"
+  name: ["阿花","阿明"]
+  id: [710761001,710661002]
+  group: "team1"
   url: ""
 ---
 請依狀況更改上面的name,id及group（分別代表組員姓名，學號及組號），但請勿更改下面三行的設定。  
@@ -62,13 +63,20 @@ library(stargazer)
 
 我們以個體經濟學為考量之進階課程，學生學習成效以**個經PR**（即學生第一次第一學期修完個經在同班的排名）來衡量。令**可修個體**虛擬變數其值為1若該學生通過修課限制可以修個經，反之為0。請寫下正確的效應結構（ 課堂上的Y即這裡的 **個經PR**，請對應課堂的$Y_{1i}-Y_{0i}$寫法，寫出這題的表示句子。)
 
+$Y_{1i}-Y_{0i}$
+$Y_{1i}$為通過限制可修個經的學生PR，$Y_{0i}$為未通過限制之學生的PR，
+故兩者相減可表示是否通過限制對學生PR的影響。
+
 ## 1.2 效應結構
 接續上題，課堂上的treatment dummy即為這裡的**可修個體**dummy，請寫下對應課堂效應結構$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$之對應寫法（以這裡的文字符號表示）。
- 
+
+$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$
+$Y_i$為學生的個經PR，$Y_{0i}$為未通過限制學生的PR，$T_i$則是treatment dummy若學生有通過限制則$T_i=1$，
+故若學生有通過個經限制，則$(Y_{1i}-Y_{0i})*1$為有通過限制的效果則會顯現。
+
 ## 1.3 簡單迴歸模型
 考慮使用如下的簡單迴歸模型來估計效應係數：
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+\epsilon_i$$
-
 執行以下程式引入作業資料**hw1Data**:
 ```{r data13}
 library(readr)
@@ -88,9 +96,12 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 model1<- lm((個經PR)~ (可修個體), data = hw1Data)
 model1_coeftest<- coeftest(model1, vcov. = vcovHC, type="HC1")
 
+summary(model1)
+summary(model1_coeftest)
+
 stargazer(model1_coeftest, 
           se=list(model1_coeftest[,"Std. Error"]),
-          type="html",
+          type="text",
           align=TRUE)
 ```
 
@@ -108,30 +119,31 @@ stargazer(model1_coeftest,
 估算以下的複迴歸模型：
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
-
 ```{r ans16}{r, results='asis'}
 model2<- lm((個經PR)~ (可修個體)+(經原PR), data = hw1Data)
 model2_coeftest<- coeftest(model2, vcov. = vcovHC, type="HC1")
 
+summary(model2)
+summary(model2_coeftest)
+
 stargazer(model2_coeftest, 
           se=list(model2_coeftest[,"Std. Error"]),
-          type="html",
+          type="text",
           align=TRUE)
 ```
 
-
 ## 1.7 變數關連
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
-
 ```{r ans17}
+str(hw1Data)
+
 
 hw1Data %>% group_by(可修個體) %>% summarise(經原avg=mean(經原PR,na.rm=T),個經avg=mean(個經PR,na.rm=T))
 
+
 ```
 
-
 ## 1.8 偏誤方向
-
 請填入以下空格完成完整偏誤論述：  
 有控制**經原PR**時，擋修會使得**個經PR** (1)_下降_(上升/下降) (2)_6.802_百分點，其值比未控制**經原PR**時還 (3)_低_(高/低)；這表示忽略**經原PR**會對效應係數估計產生 (4)_正向偏誤_(正向偏誤(upward bias)/負向偏誤(downward bias))。之所以會有上述的偏誤方向來自於兩個因素：
 
@@ -162,44 +174,45 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
 
 提示：證明過程可以適時的使用以下特質：
 
-  * $\sum_i w_i=\sum_{i,x_i=1} w_i +\sum_{i,x_i=0} w_i$
+$$\sum_i w_i=\sum_{i,x_i=1} w_i +\sum_{i,x_i=0} w_i$$
   
-  * $\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
-  
-$$\hat{\beta_1}=\frac{\sum(x_i-\bar{x})(y_i-\bar{y})-<1>}{\sum(x_i-\bar{x})^2-<2>}$$
+$\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
 
-$$<1>{\sum(x_i-\bar{x})(y_i-\bar{y})}=\sum(x_i-\bar{x})y_i=\sum{x_iy_i}-\sum{\bar{x}y_i}$$
-$$=n\bar{y_i}-\frac{n_1}{n_0+n_1}\sum{y_i}=n_1\bar{y_1}-\frac{n_1}{n_0+n_1}(n_0\bar{y_0}+n_1\bar{y_1})$$
-$$=\frac{1}{n_0+n_1}[\frac{n_1(n_0+n_1)\bar{y_1}}{n_1^2\bar{y_1}+n_0n_1\bar{y_1}}-n_1^2\bar{y_1}-n_0n_1\bar{y_0}]$$
-$$=\frac{n_0n_1}{n_0+n_1}(\bar{y_1}-\bar{y_0})$$
-
-$$<2>\sum(x_i-\bar{x})^2=\sum{x_i}^2-n\bar{x}^2=n_1-n(\frac{n_1}{n_0+n_1})^2$$
-$$=n_1-(n_0+n_1)\frac{n_1^2}{(n_0+n_1)^2}=n_1-\frac{n_1^2}{(n_0+n_1)}=\frac{n_1(n_0+n_1)-n_1^2}{n_0+n_1}$$
-$$=\frac{n_0n_1}{n_0+n_1}$$
-
-$$\hat{\beta_1}=\frac{<1>}{<2>}=\frac{\frac{n_0n_1}{n_0+n_1}(\bar{y_1}-\bar{y_0})}{\frac{n_0n_1}{n_0+n_1}}$$
-$$\hat{\beta_1}=\bar{y}_1-\bar{y}_0$$
 
 ## 2.2
 
 假設$E(\epsilon_i|x_i)=0$，證明上題設定下：
 
-  (a) $E(\hat{\beta}_1)=\beta_1$
+  (a) $$E(\hat{\beta}_1)=\beta_1$$
   
-$$\hat{\beta}=(x'x)^{-1}x'y$$
-$$=(x'x)^{-1}x'(x\beta+u)=\beta+(x'x)^{-1}x'u$$
-$$E(\hat{\beta})=\beta$$
+  (b) 若條件在已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$$。
   
-  (b) 若條件在已知已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$。
-  
-$$V(\hat{\beta}|x)=V(\hat{\beta}-\beta|x)$$
-$$=V(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})}|x)=E[(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})^2})^2|x]-[E(\frac{\sum(x_i-\bar{x})}{\sum(x_i-\bar{x})^2}|x)]^2$$
-$$=E[(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})^2})^2|x]=\frac{1}{[\sum(x_i-\bar{x})^2]^2}E[(\sum(x_i-\bar{x})u_i)^2|x]=\frac{1}{[\sum(x_i-\bar{x})^2]^2}\sum{E[(x_i-\bar{x})^2u_i^2|x]}$$
-$$=\frac{\sigma^2}{\sum(x_i-\bar{x})^2}$$
-  
-  (c) 若考慮異質變異$V(\epsilon_i|x_i)=\sigma_i^2$，則條件變異數$V(\hat{\beta}_1|X)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$。
+  (c) 若考慮異質變異$V(\epsilon_i|x_i)=\sigma_i^2$，則條件變異數$$V(\hat{\beta}_1|X)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$$。
+
+(b)
+$V(\hat{\beta}|x)=V(\hat{\beta}-\beta|x)$
+$=V(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})}|x)$
+$=E[(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})^2})^2|x]-[E(\frac{\sum(x_i-\bar{x})}{\sum(x_i-\bar{x})^2}|x)]^2$
+$=E[(\frac{\sum(x_i-\bar{x})u_i}{\sum(x_i-\bar{x})^2})^2|x]$
+$=\frac{1}{[\sum(x_i-\bar{x})^2]^2}E[(\sum(x_i-\bar{x})u_i)^2|x]$
+$=\frac{1}{[\sum(x_i-\bar{x})^2]^2}\sum{E[(x_i-\bar{x})^2u_i^2|x]}$
+$=\frac{\sigma^2}{\sum(x_i-\bar{x})^2}$
+
+
 
 ## 2.3 三明治表示式
 線性迴歸模型
 $Y=X\beta+\epsilon$
 的OLS估計式$\hat{\beta}=(X'X)^{-1}(X'Y)$。條件在已知$X$下，令$V(\epsilon|X)=\Sigma$。請證明$V(\hat{\beta}|X)=(X'X)^{-1}\Sigma (X'X)$，具有三明治形式（即可表示成$BMB'$的矩陣相乘形式）。
+
+
+
+
+
+
+
+
+
+
+
+
