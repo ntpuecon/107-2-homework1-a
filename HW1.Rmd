@@ -234,10 +234,10 @@ Pf.
 
 $$V(\hat{\beta_1}|x) = V(\frac { \sum_{i=1}^n (x_i-\bar{x})y_i } { \sum_{i=1}^n (x_i-\bar{x})^2 } |x)$$
 
-$$= \frac { \sum_{i=1}^n (x_i-\bar{x}) V(y_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
-$$= \frac { \sum_{i=1}^n (x_i-\bar{x}) V(\beta_0+\beta_1x_i+\epsilon_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
-$$= \frac { \sum_{i=1}^n (x_i-\bar{x}) V(\epsilon_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
-$$= \frac { \sum_{i=1}^n (x_i-\bar{x}) \sigma^2 } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
+$$= \frac { \sum_{i=1}^n (x_i-\bar{x})^2 V(y_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
+$$= \frac { \sum_{i=1}^n (x_i-\bar{x})^2 V(\beta_0+\beta_1x_i+\epsilon_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
+$$= \frac { \sum_{i=1}^n (x_i-\bar{x})^2 V(\epsilon_i|x) } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
+$$= \frac { \sum_{i=1}^n (x_i-\bar{x})^2 \sigma^2 } { (\sum_{i=1}^n (x_i-\bar{x})^2)^2 }$$
 $$= \frac { \sigma^2 } { \sum_{i=1}^n (x_i-\bar{x})^2}$$
 
 
